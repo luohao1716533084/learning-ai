@@ -38,12 +38,23 @@ class Net(nn.Module):
 
 loss = nn.CrossEntropyLoss()
 test_demo = Net()
-for data in dataloader:
-    imgs, targets = data
-    outputs = test_demo(imgs)
-    res = loss(outputs, targets)
-    res.backward()
-    print("ok")
+optimizer = torch.optim.SGD(test_demo.parameters(), lr=0.001)
+
+for epoch in range(20):
+    running_loss = 0.0
+    for data in dataloader:
+        imgs, targets = data
+        outputs = test_demo(imgs)
+        res = loss(outputs, targets)
+        # print("targets: ", targets)
+        # 重置梯度
+        optimizer.zero_grad()
+        # 获取梯度 grad
+        res.backward()
+        optimizer.step()
+        # print("ok")
+        running_loss = running_loss + res
+    print(running_loss)
 
 
 
